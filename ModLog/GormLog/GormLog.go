@@ -1,12 +1,12 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 02:31:00
- * @LastEditTime: 2022-05-22 22:40:38
+ * @LastEditTime: 2022-05-22 22:43:49
  * @LastEditors: NyanCatda
  * @Description: Gorm日志模块
- * @FilePath: \GormLog\GormLog.go
+ * @FilePath: \AyaLog\ModLog\GormLog\GormLog.go
  */
-package Gorm
+package GormLog
 
 import (
 	"context"

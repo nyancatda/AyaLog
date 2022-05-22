@@ -1,12 +1,12 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:11:00
- * @LastEditTime: 2022-05-22 22:41:50
+ * @LastEditTime: 2022-05-22 22:43:58
  * @LastEditors: NyanCatda
  * @Description: Gin日志模块
  * @FilePath: \AyaLog\ModLog\GinLog\GinLog.go
  */
-package Log
+package GinLog
 
 import (
 	"fmt"
