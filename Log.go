@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-05-22 22:32:20
+ * @LastEditTime: 2022-05-23 12:49:17
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
@@ -28,6 +28,7 @@ const (
 	INFO
 	WARNING
 	ERROR
+	OFF // 关闭日志
 )
 
 /**
