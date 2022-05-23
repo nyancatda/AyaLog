@@ -1,7 +1,7 @@
 <!--
  * @Author: NyanCatda
  * @Date: 2022-05-22 22:28:05
- * @LastEditTime: 2022-05-23 13:07:56
+ * @LastEditTime: 2022-05-23 13:12:17
  * @LastEditors: NyanCatda
  * @Description: 自述文件
  * @FilePath: \AyaLog\README.md
@@ -9,7 +9,7 @@
 # AyaLog
 适用于Web后端的Golang Log库
 
-使用简单，适配Gin，Gorm，实现了基础的Log功能，例如日志级别，按天分割日志，适用于轻量的Log记录需求
+使用简单，适配Gin，Gorm，实现了基础的Log功能，例如日志级别，按时间分割日志，适用于轻量的Log记录需求
 
 # 🎬如何使用
 ## 安装
@@ -30,10 +30,11 @@ import (
 
 func main() {
 	// 设置Log参数
-	AyaLog.LogLevel = AyaLog.DEBUG // 设置Log等级
-	AyaLog.LogPath = "./logs/"     // 设置Log路径
-	AyaLog.LogWriteFile = true     // 设置是否写入文件
-	AyaLog.ColorPrint = true       // 设置是否打印颜色
+	AyaLog.LogLevel = AyaLog.DEBUG        // 设置Log等级
+	AyaLog.LogPath = "./logs/"            // 设置Log路径
+	AyaLog.LogSegmentation = "2006-01-02" // 设置Log分割标识，使用Go的时间格式化标识
+	AyaLog.LogWriteFile = true            // 设置是否写入文件
+	AyaLog.ColorPrint = true              // 设置是否打印颜色
 
 	// 打印DeBug日志
 	AyaLog.DeBug("System", "This is a debug message") // 2022-05-22 23:57:38 DEBUG [System] This is a debug message

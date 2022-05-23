@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-05-23 13:04:46
+ * @LastEditTime: 2022-05-23 13:09:21
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
@@ -17,10 +17,11 @@ import (
 )
 
 var (
-	LogPath      = "./logs/" // 日志文件保存路径
-	LogWriteFile = true      // 是否写入文件
-	ColorPrint   = true      // 是否打印颜色
-	LogLevel     = DEBUG     // 日志等级
+	LogPath         = "./logs/"    // 日志文件保存路径
+	LogSegmentation = "2006-01-02" // 日志文件分割标识
+	LogWriteFile    = true         // 是否写入文件
+	ColorPrint      = true         // 是否打印颜色
+	LogLevel        = DEBUG        // 日志等级
 )
 
 // 定义日志等级
@@ -164,7 +165,7 @@ func LogFile() (*os.File, error) {
 	// 判断文件夹是否存在
 	MKDir(LogPath)
 
-	logFileName := time.Now().Format("2006-01-02") + ".log"
+	logFileName := time.Now().Format(LogSegmentation) + ".log"
 
 	logfile, err := os.OpenFile(LogPath+logFileName, os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
