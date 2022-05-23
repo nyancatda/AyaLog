@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-05-23 12:49:17
+ * @LastEditTime: 2022-05-23 13:01:36
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
@@ -38,9 +38,7 @@ const (
  * @return {*}
  */
 func Error(Source string, Error error) {
-	if LogLevel <= 3 {
-		Print(Source, ERROR, Error)
-	}
+	Print(Source, ERROR, Error)
 }
 
 /**
@@ -50,9 +48,7 @@ func Error(Source string, Error error) {
  * @return {*}
  */
 func Warning(Source string, Text ...any) {
-	if LogLevel <= 2 {
-		Print(Source, WARNING, Text...)
-	}
+	Print(Source, WARNING, Text...)
 }
 
 /**
@@ -62,9 +58,7 @@ func Warning(Source string, Text ...any) {
  * @return {*}
  */
 func Info(Source string, Text ...any) {
-	if LogLevel <= 1 {
-		Print(Source, INFO, Text...)
-	}
+	Print(Source, INFO, Text...)
 }
 
 /**
@@ -74,9 +68,7 @@ func Info(Source string, Text ...any) {
  * @return {*}
  */
 func DeBug(Source string, Text ...any) {
-	if LogLevel <= 0 {
-		Print(Source, DEBUG, Text...)
-	}
+	Print(Source, DEBUG, Text...)
 }
 
 /**
@@ -87,6 +79,17 @@ func DeBug(Source string, Text ...any) {
  * @return {*}
  */
 func Print(Source string, Level int, Text ...any) error {
+	// 根据日志等级判断是否打印
+	if Level < LogLevel {
+		return nil
+	}
+
+	// 等级打印OFF则不打印
+	if Level >= OFF {
+		return nil
+	}
+
+	// 获取当前时间
 	NowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	// Source拼接
@@ -103,8 +106,6 @@ func Print(Source string, Level int, Text ...any) error {
 		LevelStr = Yellow("WARNING")
 	case 3:
 		LevelStr = Red("ERROR")
-	default:
-		LevelStr = Magenta("Other")
 	}
 
 	Text = append([]any{Cyan(NowTime), LevelStr, Source}, Text...)

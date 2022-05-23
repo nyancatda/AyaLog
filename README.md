@@ -1,7 +1,7 @@
 <!--
  * @Author: NyanCatda
  * @Date: 2022-05-22 22:28:05
- * @LastEditTime: 2022-05-23 00:31:33
+ * @LastEditTime: 2022-05-23 13:02:18
  * @LastEditors: NyanCatda
  * @Description: 自述文件
  * @FilePath: \AyaLog\README.md
@@ -42,9 +42,6 @@ func main() {
 	AyaLog.Warning("System", "This is a warning message") // 2022-05-22 23:57:38 WARNING [System] This is a warning message
 	// 打印Error日志
 	AyaLog.Error("System", errors.New("This is a error message")) // 2022-05-22 23:57:38 ERROR [System] This is a error message
-
-	// 打印其他日志
-	AyaLog.Print("System", 5, "This is a other message") // 2022-05-23 00:00:43 Other [System] This is a other message
 
 	// 为打印的文本设置颜色
 	AyaLog.Info("System", "This is "+AyaLog.Green("Green"))
