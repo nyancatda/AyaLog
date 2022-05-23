@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-23 12:51:36
- * @LastEditTime: 2022-05-23 13:01:06
+ * @LastEditTime: 2022-05-23 13:08:11
  * @LastEditors: NyanCatda
  * @Description: 输出测试
  * @FilePath: \AyaLog\Test\Print_test.go
@@ -17,9 +17,10 @@ import (
 
 func TestPrint(t *testing.T) {
 	// 设置Log参数
-	AyaLog.LogLevel = AyaLog.OFF // 设置Log等级
-	AyaLog.LogPath = "../logs/"  // 设置Log路径
-	AyaLog.ColorPrint = true     // 设置是否打印颜色
+	AyaLog.LogLevel = AyaLog.DEBUG // 设置Log等级
+	AyaLog.LogPath = "../logs/"    // 设置Log路径
+	AyaLog.LogWriteFile = true     // 设置是否写入文件
+	AyaLog.ColorPrint = true       // 设置是否打印颜色
 
 	// 打印DeBug日志
 	AyaLog.DeBug("System", "This is a debug message")

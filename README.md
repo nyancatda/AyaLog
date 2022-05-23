@@ -1,7 +1,7 @@
 <!--
  * @Author: NyanCatda
  * @Date: 2022-05-22 22:28:05
- * @LastEditTime: 2022-05-23 13:02:18
+ * @LastEditTime: 2022-05-23 13:07:56
  * @LastEditors: NyanCatda
  * @Description: 自述文件
  * @FilePath: \AyaLog\README.md
@@ -32,6 +32,7 @@ func main() {
 	// 设置Log参数
 	AyaLog.LogLevel = AyaLog.DEBUG // 设置Log等级
 	AyaLog.LogPath = "./logs/"     // 设置Log路径
+	AyaLog.LogWriteFile = true     // 设置是否写入文件
 	AyaLog.ColorPrint = true       // 设置是否打印颜色
 
 	// 打印DeBug日志

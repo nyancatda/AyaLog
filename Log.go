@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-05-23 13:01:36
+ * @LastEditTime: 2022-05-23 13:04:46
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
@@ -17,9 +17,10 @@ import (
 )
 
 var (
-	LogPath    = "./logs/" // 日志文件保存路径
-	ColorPrint = true      // 是否打印颜色
-	LogLevel   = DEBUG     // 日志等级
+	LogPath      = "./logs/" // 日志文件保存路径
+	LogWriteFile = true      // 是否写入文件
+	ColorPrint   = true      // 是否打印颜色
+	LogLevel     = DEBUG     // 日志等级
 )
 
 // 定义日志等级
@@ -130,23 +131,25 @@ func Print(Source string, Level int, Text ...any) error {
 	}
 
 	// 写入日志
-	logFile, err := LogFile()
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer logFile.Close()
-	write := bufio.NewWriter(logFile)
+	if LogWriteFile {
+		logFile, err := LogFile()
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer logFile.Close()
+		write := bufio.NewWriter(logFile)
 
-	// 遍历消息内容去除颜色
-	var LogFileText string
-	for _, v := range Text {
-		DelColorText := DelColor(fmt.Sprint(v))
-		LogFileText += DelColorText
-		LogFileText += " "
-	}
+		// 遍历消息内容去除颜色
+		var LogFileText string
+		for _, v := range Text {
+			DelColorText := DelColor(fmt.Sprint(v))
+			LogFileText += DelColorText
+			LogFileText += " "
+		}
 
-	write.WriteString(LogFileText + "\n")
-	write.Flush()
+		write.WriteString(LogFileText + "\n")
+		write.Flush()
+	}
 
 	return nil
 }
