@@ -1,7 +1,7 @@
 <!--
  * @Author: NyanCatda
  * @Date: 2022-05-22 22:28:05
- * @LastEditTime: 2022-05-23 13:12:17
+ * @LastEditTime: 2022-06-02 21:47:49
  * @LastEditors: NyanCatda
  * @Description: 自述文件
  * @FilePath: \AyaLog\README.md
@@ -75,7 +75,7 @@ import (
 
 func main() {
 	// 关闭Gin默认的日志输出
-	gin.DefaultWriter = os.Stdin
+	gin.DefaultWriter = ioutil.Discard
 	// 初始化GIN
 	r := gin.Default()
 	// 注册日志中间件
