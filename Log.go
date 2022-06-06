@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-05-23 13:09:21
+ * @LastEditTime: 2022-06-06 17:30:26
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"time"
 )
 
@@ -40,7 +41,12 @@ const (
  * @return {*}
  */
 func Error(Source string, Error error) {
-	Print(Source, ERROR, Error)
+	// 追踪错误来源
+	var buf [4096]byte
+	n := runtime.Stack(buf[:], false)
+	ErrorStack := fmt.Sprintf("\n%s", string(buf[:n]))
+
+	Print(Source, ERROR, Error.Error()+ErrorStack)
 }
 
 /**
