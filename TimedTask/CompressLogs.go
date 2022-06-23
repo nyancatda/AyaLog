@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-06-23 22:24:03
- * @LastEditTime: 2022-06-23 22:53:09
+ * @LastEditTime: 2022-06-23 23:19:57
  * @LastEditors: NyanCatda
  * @Description: 定时压缩文件
  * @FilePath: \TimedTask\CompressLogs.go
@@ -37,6 +37,10 @@ func CompressLogs() {
 	for _, FileName := range FileList {
 		// 如果是当日的日志文件，则跳过
 		if FileName == NowTime+".log" {
+			continue
+		}
+		// 如果已经是压缩文件，则跳过
+		if filepath.Ext(FileName) == ".gzip" {
 			continue
 		}
 
