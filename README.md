@@ -1,7 +1,7 @@
 <!--
  * @Author: NyanCatda
  * @Date: 2022-05-22 22:28:05
- * @LastEditTime: 2022-06-02 21:47:49
+ * @LastEditTime: 2022-06-23 23:35:38
  * @LastEditors: NyanCatda
  * @Description: 自述文件
  * @FilePath: \AyaLog\README.md
@@ -133,6 +133,67 @@ func main() {
 		AyaLog.Error("System", err)
 	}
 	defer SQLDB.Close()
+}
+```
+
+## 启用自动压缩与清理日志文件
+### 安装定时任务模块
+```
+go get -u github.com/nyancatda/AyaLog/TimedTask
+```
+### 直接启用定时任务
+直接启动默认的定时任务，每天压缩日志文件，每天清理7天前的日志文件
+``` go
+package main
+
+import (
+	"github.com/nyancatda/AyaLog"
+	"github.com/nyancatda/AyaLog/TimedTask"
+)
+
+func main() {
+	// 设置Log参数
+	AyaLog.LogLevel = AyaLog.DEBUG        // 设置Log等级
+	AyaLog.LogPath = "./logs/"            // 设置Log路径
+	AyaLog.LogSegmentation = "2006-01-02" // 设置Log分割标识
+
+	// 启动定时任务
+	go TimedTask.Start()
+
+	AyaLog.Info("System", "定时任务启动")
+}
+
+```
+### 自定义定时任务
+使用模块提供的函数，自定义定时任务，推荐使用`jasonlvhit/gocron`
+``` go
+package main
+
+import (
+	"github.com/jasonlvhit/gocron"
+	"github.com/nyancatda/AyaLog"
+	"github.com/nyancatda/AyaLog/TimedTask"
+)
+
+func main() {
+	// 设置Log参数
+	AyaLog.LogLevel = AyaLog.DEBUG        // 设置Log等级
+	AyaLog.LogPath = "./logs/"            // 设置Log路径
+	AyaLog.LogSegmentation = "2006-01-02" // 设置Log分割标识
+
+	// 新建一个线程来执行定时任务
+	go func() {
+		// 初始化定时任务
+		Task := gocron.NewScheduler()
+
+		Task.Every(1).Day().Do(TimedTask.CompressLogs) // 每天执行一次日志压缩任务
+		Task.Every(1).Day().Do(TimedTask.CleanFile, 7) // 每天执行一次日志清理任务，清理7天前的日志文件
+
+		// 开始执行定时任务
+		<-Task.Start()
+	}()
+
+	AyaLog.Info("System", "定时任务启动")
 }
 ```
 
