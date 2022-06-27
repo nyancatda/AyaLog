@@ -40,7 +40,7 @@ func CompressLogs() {
 			continue
 		}
 		// 如果已经是压缩文件，则跳过
-		if filepath.Ext(FileName) == ".gzip" {
+		if filepath.Ext(FileName) == ".gz" {
 			continue
 		}
 
@@ -88,7 +88,7 @@ func GetFileList(FilePath string) ([]string, error) {
  */
 func WriterGZip(FilePath string) error {
 	// 创建文件
-	ZipFile, err := os.Create(FilePath + ".gzip")
+	ZipFile, err := os.Create(FilePath + ".gz")
 	if err != nil {
 		return err
 	}
