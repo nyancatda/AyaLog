@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-07-19 18:23:17
+ * @LastEditTime: 2022-07-19 18:27:20
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
@@ -132,15 +132,15 @@ func Print(Source string, Level int, Text ...any) error {
 		LogText = Text
 	}
 
-	if LineEndString != "" {
-		// 添加行末字符串
-		LogText = append(LogText, LineEndString)
-	}
-
 	// 打印日志
 	_, err := fmt.Println(LogText...)
 	if err != nil {
 		return err
+	}
+
+	if LineEndString != "" {
+		// 打印行末字符串
+		fmt.Print(LineEndString)
 	}
 
 	// 写入日志
