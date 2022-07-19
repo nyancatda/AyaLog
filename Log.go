@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-07-19 18:27:20
+ * @LastEditTime: 2022-07-19 18:30:02
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
@@ -23,6 +23,7 @@ var (
 	LogWriteFile    = true         // 是否写入文件
 	ColorPrint      = true         // 是否打印颜色
 	LogLevel        = DEBUG        // 日志等级
+	CleanLine       = false        // 打印日志前是否清空行前内容
 	LineEndString   = ""           // 行末字符串(不会被打印到日志文件)
 )
 
@@ -130,6 +131,11 @@ func Print(Source string, Level int, Text ...any) error {
 		}
 	} else {
 		LogText = Text
+	}
+
+	if CleanLine {
+		// 清空行前内容
+		fmt.Print("\r")
 	}
 
 	// 打印日志
