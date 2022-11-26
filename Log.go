@@ -1,29 +1,12 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-11-26 16:46:05
+ * @LastEditTime: 2022-11-26 18:25:02
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
  */
 package AyaLog
-
-import (
-	"bufio"
-	"fmt"
-	"runtime"
-	"time"
-)
-
-var (
-	LogPath         = "./logs/"    // 日志文件保存路径
-	LogSegmentation = "2006-01-02" // 日志文件分割标识
-	LogWriteFile    = true         // 是否写入文件
-	ColorPrint      = true         // 是否打印颜色
-	LogLevel        = DEBUG        // 日志等级
-	CleanLine       = false        // 打印日志前是否清空行前内容
-	LineEndString   = ""           // 行末字符串(不会被打印到日志文件)
-)
 
 // 定义日志等级
 const (
@@ -34,139 +17,43 @@ const (
 	OFF // 关闭日志
 )
 
-/**
- * @description: 打印错误
- * @param {string} Source 日志来源
- * @param {error} Error 错误信息
- * @return {*}
- */
-func Error(Source string, Error error) {
-	// 追踪错误来源
-	var buf [4096]byte
-	n := runtime.Stack(buf[:], false)
-	ErrorStack := fmt.Sprintf("\n%s", string(buf[:n]))
+type Log struct {
+	Path            string // 日志文件保存路径
+	Segmentation    string // 日志文件分割标识(使用go默认时间格式)
+	WriteFile       bool   // 是否写入文件
+	ColorPrint      bool   // 是否打印颜色
+	Level           int    // 日志等级
+	Prefix          string // 日志前缀
+	PrefixWriteFile bool   // 日志前缀是否写入文件
+	Suffix          string // 日志后缀
+	SuffixWriteFile bool   // 日志后缀是否写入文件
+	PrintErrorStack bool   // 是否打印错误堆栈
+}
 
-	Print(Source, ERROR, Error.Error()+ErrorStack)
+type LogPrint interface {
+	Print(Source string, Level int, Text ...any) error // 打印日志
+	Error(Source string, Error error)                  // 打印错误
+	Warning(Source string, Text ...any)                // 打印警告
+	Info(Source string, Text ...any)                   // 打印信息
+	DeBug(Source string, Text ...any)                  // 打印DeBug信息
 }
 
 /**
- * @description: 打印警告
- * @param {string} Source 日志来源
- * @param {...any} Text 日志内容
- * @return {*}
+ * @description: 创建一个默认日志实例
+ * @param {*}
+ * @return {Log} 日志实例
  */
-func Warning(Source string, Text ...any) {
-	Print(Source, WARNING, Text...)
-}
-
-/**
- * @description: 打印信息
- * @param {string} Source 日志来源
- * @param {...any} Text 日志内容
- * @return {*}
- */
-func Info(Source string, Text ...any) {
-	Print(Source, INFO, Text...)
-}
-
-/**
- * @description: 打印DeBug错误
- * @param {string} Source 日志来源
- * @param {...any} Text 日志内容
- * @return {*}
- */
-func DeBug(Source string, Text ...any) {
-	Print(Source, DEBUG, Text...)
-}
-
-/**
- * @description:  标准日志打印
- * @param {string} Source 日志来源
- * @param {string} Level 日志等级 INFO/WARNING/ERROR/DEBUG
- * @param {...any} Text 日志内容
- * @return {*}
- */
-func Print(Source string, Level int, Text ...any) error {
-	// 根据日志等级判断是否打印
-	if Level < LogLevel {
-		return nil
+func NewLog() *Log {
+	return &Log{
+		Path:            "./logs/",
+		Segmentation:    "2006-01-02",
+		WriteFile:       true,
+		ColorPrint:      true,
+		Level:           DEBUG,
+		Prefix:          "",
+		PrefixWriteFile: false,
+		Suffix:          "",
+		SuffixWriteFile: false,
+		PrintErrorStack: true,
 	}
-
-	// 等级打印OFF则不打印
-	if Level >= OFF {
-		return nil
-	}
-
-	// 获取当前时间
-	NowTime := time.Now().Format("2006-01-02 15:04:05")
-
-	// Source拼接
-	Source = "[" + Source + "]"
-
-	// 判断level颜色
-	var LevelStr string
-	switch Level {
-	case 0:
-		LevelStr = Green("DEBUG")
-	case 1:
-		LevelStr = Blue("INFO")
-	case 2:
-		LevelStr = Yellow("WARNING")
-	case 3:
-		LevelStr = Red("ERROR")
-	}
-
-	Text = append([]any{Cyan(NowTime), LevelStr, Source}, Text...)
-
-	// 准备打印日志
-	var LogText []any
-	// 如果彩色打印被关闭
-	if !ColorPrint {
-		// 遍历消息内容去除颜色
-		for _, v := range Text {
-			DelColorText := DelColor(fmt.Sprint(v))
-			LogText = append(LogText, DelColorText)
-		}
-	} else {
-		LogText = Text
-	}
-
-	if CleanLine {
-		// 清空行前内容
-		fmt.Print("\r")
-	}
-
-	// 打印日志
-	_, err := fmt.Println(LogText...)
-	if err != nil {
-		return err
-	}
-
-	if LineEndString != "" {
-		// 打印行末字符串
-		fmt.Print(LineEndString)
-	}
-
-	// 写入日志
-	if LogWriteFile {
-		logFile, err := LogFile()
-		if err != nil {
-			fmt.Println(err)
-		}
-		defer logFile.Close()
-		write := bufio.NewWriter(logFile)
-
-		// 遍历消息内容去除颜色
-		var LogFileText string
-		for _, v := range Text {
-			DelColorText := DelColor(fmt.Sprint(v))
-			LogFileText += DelColorText
-			LogFileText += " "
-		}
-
-		write.WriteString(LogFileText + "\n")
-		write.Flush()
-	}
-
-	return nil
 }

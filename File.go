@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-11-26 16:45:50
- * @LastEditTime: 2022-11-26 16:48:09
+ * @LastEditTime: 2022-11-26 18:05:11
  * @LastEditors: NyanCatda
  * @Description: 文件操作
  * @FilePath: \AyaLog\File.go
@@ -20,13 +20,13 @@ import (
  * @return {*os.File}
  * @return {error}
  */
-func LogFile() (*os.File, error) {
-	// 判断文件夹是否存在
-	MKDir(LogPath)
+func (Log Log) openLogFile() (*os.File, error) {
+	// 判断文件夹是否存在，不存在则创建
+	mkDir(Log.Path)
 
-	LogFileName := time.Now().Format(LogSegmentation) + ".log"
+	LogFileName := time.Now().Format(Log.Segmentation) + ".log"
 
-	Logfile, err := os.OpenFile(LogPath+LogFileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+	Logfile, err := os.OpenFile(Log.Path+LogFileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func LogFile() (*os.File, error) {
  * @return {bool} 是否创建成功
  * @return {error} 错误信息
  */
-func MKDir(Path string) (bool, error) {
+func mkDir(Path string) (bool, error) {
 	Path = filepath.Clean(Path)
 	_, err := os.Stat(Path)
 	if err == nil {
