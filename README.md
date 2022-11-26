@@ -1,7 +1,7 @@
 <!--
  * @Author: NyanCatda
  * @Date: 2022-05-22 22:28:05
- * @LastEditTime: 2022-11-26 18:33:11
+ * @LastEditTime: 2022-11-27 00:14:01
  * @LastEditors: NyanCatda
  * @Description: 自述文件
  * @FilePath: \AyaLog\README.md
@@ -14,7 +14,7 @@
 # 🎬 如何使用
 ## 安装
 ```
-go get -u github.com/nyancatda/AyaLog
+go get -u github.com/nyancatda/AyaLog/v2
 ```
 
 ## 基础功能
@@ -25,7 +25,7 @@ package main
 import (
 	"errors"
 
-	"github.com/nyancatda/AyaLog"
+	"github.com/nyancatda/AyaLog/v2"
 )
 
 func main() {
@@ -53,11 +53,11 @@ func main() {
 ## 为Gin日志启用
 ### 安装Gin日志模块
 ```
-go get -u github.com/nyancatda/AyaLog/ModLog/GinLog
+go get -u github.com/nyancatda/AyaLog/Module/GinLog
 ```
 ### 注册模块提供的日志中间件
 ``` go
-r.Use((GinLog.GinLog()))
+r.Use((GinLog.GinLog(*Log)))
 ```
 ### 例子
 ``` go
@@ -67,21 +67,24 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nyancatda/AyaLog"
-	"github.com/nyancatda/AyaLog/ModLog/GinLog"
+	"github.com/nyancatda/AyaLog/Module/GinLog"
+	"github.com/nyancatda/AyaLog/v2"
 )
 
 func main() {
+	// 创建一个默认日志实例
+	Log := AyaLog.NewLog()
+
 	// 关闭Gin默认的日志输出
-	gin.DefaultWriter = ioutil.Discard
+	gin.DefaultWriter = os.Stdin
 	// 初始化GIN
 	r := gin.Default()
 	// 注册日志中间件
-	r.Use((GinLog.GinLog()))
+	r.Use((GinLog.GinLog(*Log)))
 
 	// 运行
 	if err := r.Run(":8000"); err != nil {
-		AyaLog.Error("System", err)
+		Log.Error("GIN", err)
 	}
 }
 ```
@@ -89,12 +92,12 @@ func main() {
 ## 为Gorm日志启用
 ### 安装Gorm日志模块
 ```
-go get -u github.com/nyancatda/AyaLog/ModLog/GormLog
+go get -u github.com/nyancatda/AyaLog/Module/GormLog
 ```
 ### 将Logger设置为模块提供的接口
 ``` go
 ConnectDB, err := gorm.Open(mysql.Open(ConnectInfo), &gorm.Config{
-    Logger: GormLog.GormLog{},
+	Logger: GormLog.GormLog{Log: *Log},
 })
 ```
 ### 例子
@@ -102,13 +105,16 @@ ConnectDB, err := gorm.Open(mysql.Open(ConnectInfo), &gorm.Config{
 package main
 
 import (
-	"github.com/nyancatda/AyaLog"
-	"github.com/nyancatda/AyaLog/ModLog/GormLog"
+	"github.com/nyancatda/AyaLog/Module/GormLog"
+	"github.com/nyancatda/AyaLog/v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
+	// 创建一个默认日志实例
+	Log := AyaLog.NewLog()
+
 	// 配置数据库信息
 	MySQLUser := ""
 	MySQLPassword := ""
@@ -119,16 +125,16 @@ func main() {
 
 	//创建MySQL连接
 	ConnectDB, err := gorm.Open(mysql.Open(ConnectInfo), &gorm.Config{
-		Logger: GormLog.GormLog{}, // Logger设置为AyaLog的GormLog模块
+		Logger: GormLog.GormLog{Log: *Log}, // Logger设置为AyaLog的GormLog模块
 	})
 	if err != nil {
-		AyaLog.Error("System", err)
+		Log.Error("Gorm", err)
 	}
 
 	// 关闭连接
 	SQLDB, err := ConnectDB.DB()
 	if err != nil {
-		AyaLog.Error("System", err)
+		Log.Error("Gorm", err)
 	}
 	defer SQLDB.Close()
 }
@@ -137,7 +143,7 @@ func main() {
 ## 启用自动压缩与清理日志文件
 ### 安装定时任务模块
 ```
-go get -u github.com/nyancatda/AyaLog/TimedTask
+go get -u github.com/nyancatda/AyaLog/Module/TimedTask
 ```
 ### 直接启用定时任务
 直接启动默认的定时任务，每天压缩日志文件，每天清理7天前的日志文件
@@ -145,22 +151,19 @@ go get -u github.com/nyancatda/AyaLog/TimedTask
 package main
 
 import (
-	"github.com/nyancatda/AyaLog"
-	"github.com/nyancatda/AyaLog/TimedTask"
+	"github.com/nyancatda/AyaLog/Module/TimedTask"
+	"github.com/nyancatda/AyaLog/v2"
 )
 
 func main() {
-	// 设置Log参数
-	AyaLog.LogLevel = AyaLog.DEBUG        // 设置Log等级
-	AyaLog.LogPath = "./logs/"            // 设置Log路径
-	AyaLog.LogSegmentation = "2006-01-02" // 设置Log分割标识
+	// 创建一个默认日志实例
+	Log := AyaLog.NewLog()
 
 	// 启动定时任务
-	go TimedTask.Start()
+	go TimedTask.Start(*Log)
 
-	AyaLog.Info("System", "定时任务启动")
+	Log.Info("System", "定时任务启动")
 }
-
 ```
 ### 自定义定时任务
 使用模块提供的函数，自定义定时任务，推荐使用`jasonlvhit/gocron`
@@ -169,29 +172,27 @@ package main
 
 import (
 	"github.com/jasonlvhit/gocron"
-	"github.com/nyancatda/AyaLog"
-	"github.com/nyancatda/AyaLog/TimedTask"
+	"github.com/nyancatda/AyaLog/Module/TimedTask"
+	"github.com/nyancatda/AyaLog/v2"
 )
 
 func main() {
-	// 设置Log参数
-	AyaLog.LogLevel = AyaLog.DEBUG        // 设置Log等级
-	AyaLog.LogPath = "./logs/"            // 设置Log路径
-	AyaLog.LogSegmentation = "2006-01-02" // 设置Log分割标识
+	// 创建一个默认日志实例
+	Log := AyaLog.NewLog()
 
 	// 新建一个线程来执行定时任务
 	go func() {
 		// 初始化定时任务
 		Task := gocron.NewScheduler()
 
-		Task.Every(1).Day().Do(TimedTask.CompressLogs) // 每天执行一次日志压缩任务
-		Task.Every(1).Day().Do(TimedTask.CleanFile, 7) // 每天执行一次日志清理任务，清理7天前的日志文件
+		Task.Every(1).Day().Do(TimedTask.CompressLogs, *Log) // 每天执行一次日志压缩任务
+		Task.Every(1).Day().Do(TimedTask.CleanFile, *Log, 7) // 每天执行一次日志清理任务，清理7天前的日志文件
 
 		// 开始执行定时任务
 		<-Task.Start()
 	}()
 
-	AyaLog.Info("System", "定时任务启动")
+	Log.Info("System", "定时任务启动")
 }
 ```
 
