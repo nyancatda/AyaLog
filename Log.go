@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-07-19 18:30:02
+ * @LastEditTime: 2022-11-26 16:46:05
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
@@ -11,8 +11,6 @@ package AyaLog
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"path/filepath"
 	"runtime"
 	"time"
 )
@@ -171,50 +169,4 @@ func Print(Source string, Level int, Text ...any) error {
 	}
 
 	return nil
-}
-
-/**
- * @description: 打开Log文件，按天分割日志
- * @param {*}
- * @return {*os.File}
- * @return {error}
- */
-func LogFile() (*os.File, error) {
-	// 判断文件夹是否存在
-	MKDir(LogPath)
-
-	logFileName := time.Now().Format(LogSegmentation) + ".log"
-
-	logfile, err := os.OpenFile(LogPath+logFileName, os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		// 如果文件不存在则创建
-		logfile, err := os.Create(LogPath + logFileName)
-		if err != nil {
-			return logfile, err
-		}
-		return logfile, nil
-	}
-
-	return logfile, nil
-}
-
-/**
- * @description: 创建文件夹，如果不存在则创建
- * @param {string} path 文件夹路径
- * @return {*}
- */
-func MKDir(Path string) (bool, error) {
-	Path = filepath.Clean(Path)
-	_, err := os.Stat(Path)
-	if err == nil {
-		return true, nil
-	}
-	if os.IsNotExist(err) {
-		// 创建文件夹
-		err := os.MkdirAll(Path, os.ModePerm)
-		if err != nil {
-			return false, err
-		}
-	}
-	return true, nil
 }
