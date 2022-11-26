@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-23 12:51:36
- * @LastEditTime: 2022-11-26 18:32:23
+ * @LastEditTime: 2022-11-26 22:43:40
  * @LastEditors: NyanCatda
  * @Description: 输出测试
  * @FilePath: \AyaLog\Test\Print_test.go
@@ -12,7 +12,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/nyancatda/AyaLog"
+	"github.com/nyancatda/AyaLog/v2"
 )
 
 func TestPrint(t *testing.T) {
