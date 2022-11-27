@@ -21,7 +21,7 @@ import (
  * @param {AyaLog.Log} Log 日志实例
  * @return {*}
  */
-func GinLog(Log AyaLog.Log) gin.HandlerFunc {
+func GinLog(Log AyaLog.LogPrint) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		StartTime := time.Now()               // 记录开始时间
 		c.Next()                              // 继续处理请求

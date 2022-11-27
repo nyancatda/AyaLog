@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 02:31:00
- * @LastEditTime: 2022-11-26 23:36:00
+ * @LastEditTime: 2022-11-27 16:10:54
  * @LastEditors: NyanCatda
  * @Description: Gorm日志模块
  * @FilePath: \GormLog\GormLog.go
@@ -19,7 +19,7 @@ import (
 )
 
 type GormLog struct {
-	Log AyaLog.Log // 日志实例
+	Log AyaLog.LogPrint // 日志接口实例
 }
 
 /**
