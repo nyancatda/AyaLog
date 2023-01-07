@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/gin-gonic/gin v1.8.1
-	github.com/nyancatda/AyaLog/v2 v2.0.0
+	github.com/nyancatda/AyaLog/v2 v2.1.2
 )
 
 require (
