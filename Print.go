@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-11-26 16:50:36
- * @LastEditTime: 2023-01-07 22:24:29
+ * @LastEditTime: 2023-01-07 22:58:09
  * @LastEditors: NyanCatda
  * @Description: 打印日志
  * @FilePath: \AyaLog\Print.go
@@ -68,9 +68,9 @@ func (Log *Log) DeBug(Source string, Text ...any) {
 /**
  * @description:  标准日志打印
  * @param {string} Source 日志来源
- * @param {string} Level 日志等级 INFO/WARNING/ERROR/DEBUG
+ * @param {int} Level 日志等级 DEBUG/INFO/WARNING/ERROR/OFF
  * @param {...any} Text 日志内容
- * @return {*}
+ * @return {error} error
  */
 func (Log *Log) Print(Source string, Level int, Text ...any) error {
 	// 执行日志打印前中间件
