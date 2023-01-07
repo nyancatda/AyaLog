@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-11-26 16:45:50
- * @LastEditTime: 2023-01-07 16:27:08
+ * @LastEditTime: 2023-01-07 16:49:24
  * @LastEditors: NyanCatda
  * @Description: 文件操作
  * @FilePath: \AyaLog\File.go
@@ -21,7 +21,7 @@ import (
  * @param {...any} Text 日志内容
  * @return {error} 错误信息
  */
-func (Log Log) writeLogFile(Text ...any) error {
+func (Log *Log) writeLogFile(Text ...any) error {
 	// 获取一个文件实例
 	LogFile, err := Log.openLogFile()
 	if err != nil {
@@ -66,7 +66,7 @@ func (Log Log) writeLogFile(Text ...any) error {
  * @return {*os.File}
  * @return {error}
  */
-func (Log Log) openLogFile() (*os.File, error) {
+func (Log *Log) openLogFile() (*os.File, error) {
 	LogFileSegmentation := time.Now().Format(Log.Segmentation)
 	// 判断日志分割标识是否变更，变更则关闭文件后重新打开，否则直接返回
 	if Log.nowSegmentation != LogFileSegmentation {
@@ -101,7 +101,7 @@ func (Log Log) openLogFile() (*os.File, error) {
  * @return {*os.File} 日志文件实例
  * @return {error} 错误信息
  */
-func (Log Log) newLogFile(FileSegmentation string) (*os.File, error) {
+func (Log *Log) newLogFile(FileSegmentation string) (*os.File, error) {
 	// 判断文件夹是否存在，不存在则创建
 	mkDir(Log.Path)
 	LogFileName := FileSegmentation + ".log"

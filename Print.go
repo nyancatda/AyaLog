@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-11-26 16:50:36
- * @LastEditTime: 2023-01-07 16:10:06
+ * @LastEditTime: 2023-01-07 16:48:33
  * @LastEditors: NyanCatda
  * @Description: 打印日志
  * @FilePath: \AyaLog\Print.go
@@ -20,7 +20,7 @@ import (
  * @param {error} Error 错误信息
  * @return {*}
  */
-func (Log Log) Error(Source string, Error error) {
+func (Log *Log) Error(Source string, Error error) {
 	if Log.PrintErrorStack {
 		// 追踪错误来源
 		var buf [4096]byte
@@ -40,7 +40,7 @@ func (Log Log) Error(Source string, Error error) {
  * @param {...any} Text 日志内容
  * @return {*}
  */
-func (Log Log) Warning(Source string, Text ...any) {
+func (Log *Log) Warning(Source string, Text ...any) {
 	Log.Print(Source, WARNING, Text...)
 }
 
@@ -50,7 +50,7 @@ func (Log Log) Warning(Source string, Text ...any) {
  * @param {...any} Text 日志内容
  * @return {*}
  */
-func (Log Log) Info(Source string, Text ...any) {
+func (Log *Log) Info(Source string, Text ...any) {
 	Log.Print(Source, INFO, Text...)
 }
 
@@ -60,7 +60,7 @@ func (Log Log) Info(Source string, Text ...any) {
  * @param {...any} Text 日志内容
  * @return {*}
  */
-func (Log Log) DeBug(Source string, Text ...any) {
+func (Log *Log) DeBug(Source string, Text ...any) {
 	Log.Print(Source, DEBUG, Text...)
 }
 
@@ -71,7 +71,7 @@ func (Log Log) DeBug(Source string, Text ...any) {
  * @param {...any} Text 日志内容
  * @return {*}
  */
-func (Log Log) Print(Source string, Level int, Text ...any) error {
+func (Log *Log) Print(Source string, Level int, Text ...any) error {
 	// 根据日志等级判断是否打印
 	if Level < Log.Level {
 		return nil
