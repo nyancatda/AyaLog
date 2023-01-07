@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-11-26 16:45:50
- * @LastEditTime: 2023-01-07 16:49:24
+ * @LastEditTime: 2023-01-07 17:22:41
  * @LastEditors: NyanCatda
  * @Description: 文件操作
  * @FilePath: \AyaLog\File.go
@@ -106,7 +106,8 @@ func (Log *Log) newLogFile(FileSegmentation string) (*os.File, error) {
 	mkDir(Log.Path)
 	LogFileName := FileSegmentation + ".log"
 
-	Logfile, err := os.OpenFile(Log.Path+LogFileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+	LogFilePath := filepath.Clean(Log.Path + "/" + LogFileName)
+	Logfile, err := os.OpenFile(LogFilePath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
 		return nil, err
 	}
