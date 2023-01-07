@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-23 12:51:36
- * @LastEditTime: 2022-11-26 22:43:40
+ * @LastEditTime: 2023-01-07 16:24:36
  * @LastEditors: NyanCatda
  * @Description: 输出测试
  * @FilePath: \AyaLog\Test\Print_test.go
@@ -20,7 +20,6 @@ func TestPrint(t *testing.T) {
 	Log := AyaLog.NewLog()
 	// 配置日志实例
 	Log.Level = AyaLog.DEBUG // 设置日志等级
-	Log.WriteFile = false
 
 	// 打印DeBug日志
 	Log.DeBug("System", "This is a debug message")
