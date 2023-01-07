@@ -1,12 +1,14 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2022-11-26 18:25:02
+ * @LastEditTime: 2023-01-07 15:51:12
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
  */
 package AyaLog
+
+import "os"
 
 // 定义日志等级
 const (
@@ -28,6 +30,9 @@ type Log struct {
 	Suffix          string // 日志后缀
 	SuffixWriteFile bool   // 日志后缀是否写入文件
 	PrintErrorStack bool   // 是否打印错误堆栈
+
+	nowSegmentation string   // 当前日志分割标识
+	logFile         *os.File // 日志文件实例
 }
 
 type LogPrint interface {

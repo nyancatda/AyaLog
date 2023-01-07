@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-11-26 16:50:36
- * @LastEditTime: 2022-11-26 18:22:03
+ * @LastEditTime: 2023-01-07 16:10:06
  * @LastEditors: NyanCatda
  * @Description: 打印日志
  * @FilePath: \AyaLog\Print.go
@@ -9,7 +9,6 @@
 package AyaLog
 
 import (
-	"bufio"
 	"fmt"
 	"runtime"
 	"time"
@@ -121,7 +120,6 @@ func (Log Log) Print(Source string, Level int, Text ...any) error {
 	if Log.Prefix != "" {
 		PrintLogText = append([]any{Log.Prefix}, PrintLogText...)
 	}
-
 	// 追加打印后缀
 	if Log.Suffix != "" {
 		PrintLogText = append(PrintLogText, Log.Suffix)
@@ -135,34 +133,10 @@ func (Log Log) Print(Source string, Level int, Text ...any) error {
 
 	// 写入日志
 	if Log.WriteFile {
-		LogFile, err := Log.openLogFile()
+		err := Log.writeLogFile(Text...)
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
-		defer LogFile.Close()
-		Write := bufio.NewWriter(LogFile)
-
-		var FileLogText string
-
-		// 遍历消息内容去除颜色
-		for _, v := range Text {
-			DelColorText := DelColor(fmt.Sprint(v))
-			FileLogText += DelColorText
-			FileLogText += " "
-		}
-
-		// 追加打印前缀
-		if Log.PrefixWriteFile {
-			FileLogText = Log.Prefix + FileLogText
-		}
-
-		// 追加打印后缀
-		if Log.SuffixWriteFile {
-			FileLogText = FileLogText + Log.Suffix
-		}
-
-		Write.WriteString(FileLogText + "\n")
-		Write.Flush()
 	}
 
 	return nil
