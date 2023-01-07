@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-23 12:51:36
- * @LastEditTime: 2023-01-07 16:24:36
+ * @LastEditTime: 2023-01-07 22:22:57
  * @LastEditors: NyanCatda
  * @Description: 输出测试
  * @FilePath: \AyaLog\Test\Print_test.go
@@ -10,6 +10,7 @@ package Test
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/nyancatda/AyaLog/v2"
@@ -20,6 +21,16 @@ func TestPrint(t *testing.T) {
 	Log := AyaLog.NewLog()
 	// 配置日志实例
 	Log.Level = AyaLog.DEBUG // 设置日志等级
+
+	// 设置日志打印前中间件
+	Log.UseBefore(func(Level *int, Source *string, Text ...*any) {
+		// 修改内容
+		*Source = "Middleware"
+	})
+	// 设置日志打印后中间件
+	Log.UseAfter(func(Level int, Source string, Text ...any) {
+		fmt.Println("After: ", Level, Source, Text)
+	})
 
 	// 打印DeBug日志
 	Log.DeBug("System", "This is a debug message")

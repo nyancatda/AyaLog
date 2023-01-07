@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-05-22 00:03:28
- * @LastEditTime: 2023-01-07 15:51:12
+ * @LastEditTime: 2023-01-07 22:02:49
  * @LastEditors: NyanCatda
  * @Description: 日志模块
  * @FilePath: \AyaLog\Log.go
@@ -33,6 +33,9 @@ type Log struct {
 
 	nowSegmentation string   // 当前日志分割标识
 	logFile         *os.File // 日志文件实例
+
+	middlewareBefore []middlewareBefore // 日志打印前中间件组
+	middlewareAfter  []middlewareAfter  // 日志打印后中间件组
 }
 
 type LogPrint interface {
