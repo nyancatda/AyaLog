@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-11-26 16:50:36
- * @LastEditTime: 2023-01-07 16:48:33
+ * @LastEditTime: 2023-01-07 22:24:29
  * @LastEditors: NyanCatda
  * @Description: 打印日志
  * @FilePath: \AyaLog\Print.go
@@ -11,6 +11,7 @@ package AyaLog
 import (
 	"fmt"
 	"runtime"
+	"strconv"
 	"time"
 )
 
@@ -72,6 +73,18 @@ func (Log *Log) DeBug(Source string, Text ...any) {
  * @return {*}
  */
 func (Log *Log) Print(Source string, Level int, Text ...any) error {
+	// 执行日志打印前中间件
+	if len(Log.middlewareBefore) != 0 {
+		var TextPointer []*any
+		for i := range Text {
+			TextPointer = append(TextPointer, &Text[i])
+		}
+
+		for _, Func := range Log.middlewareBefore {
+			Func(&Level, &Source, TextPointer...)
+		}
+	}
+
 	// 根据日志等级判断是否打印
 	if Level < Log.Level {
 		return nil
@@ -86,56 +99,66 @@ func (Log *Log) Print(Source string, Level int, Text ...any) error {
 	NowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	// Source拼接
-	Source = "[" + Source + "]"
+	PrintSource := "[" + Source + "]"
 
 	// 判断level颜色
-	var LevelStr string
+	var PrintLevel string
 	switch Level {
 	case 0:
-		LevelStr = Green("DEBUG")
+		PrintLevel = Green("DEBUG")
 	case 1:
-		LevelStr = Blue("INFO")
+		PrintLevel = Blue("INFO")
 	case 2:
-		LevelStr = Yellow("WARNING")
+		PrintLevel = Yellow("WARNING")
 	case 3:
-		LevelStr = Red("ERROR")
+		PrintLevel = Red("ERROR")
+	default:
+		PrintLevel = strconv.Itoa(Level)
 	}
 
-	Text = append([]any{Cyan(NowTime), LevelStr, Source}, Text...)
+	var PrintText []any
+	PrintText = append([]any{Cyan(NowTime), PrintLevel, PrintSource}, Text...)
 
 	// 准备打印日志
-	var PrintLogText []any
+	var LogBody []any
 	// 如果彩色打印被关闭
 	if !Log.ColorPrint {
 		// 遍历消息内容去除颜色
-		for _, v := range Text {
+		for _, v := range PrintText {
 			DelColorText := DelColor(fmt.Sprint(v))
-			PrintLogText = append(PrintLogText, DelColorText)
+			LogBody = append(LogBody, DelColorText)
 		}
 	} else {
-		PrintLogText = Text
+		LogBody = PrintText
 	}
 
 	// 追加打印前缀
 	if Log.Prefix != "" {
-		PrintLogText = append([]any{Log.Prefix}, PrintLogText...)
+		LogBody = append([]any{Log.Prefix}, LogBody...)
 	}
 	// 追加打印后缀
 	if Log.Suffix != "" {
-		PrintLogText = append(PrintLogText, Log.Suffix)
+		LogBody = append(LogBody, Log.Suffix)
 	}
 
 	// 打印日志
-	_, err := fmt.Println(PrintLogText...)
+	_, err := fmt.Println(LogBody...)
 	if err != nil {
 		return err
 	}
 
 	// 写入日志
 	if Log.WriteFile {
-		err := Log.writeLogFile(Text...)
+		err := Log.writeLogFile(PrintText...)
 		if err != nil {
 			return err
+		}
+	}
+
+	// 执行日志打印后中间件
+	if len(Log.middlewareAfter) != 0 {
+		for _, Func := range Log.middlewareAfter {
+			Func(Level, Source, Text...)
 		}
 	}
 
