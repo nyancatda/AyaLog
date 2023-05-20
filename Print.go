@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-11-26 16:50:36
- * @LastEditTime: 2023-01-07 22:58:09
+ * @LastEditTime: 2023-05-20 20:58:51
  * @LastEditors: NyanCatda
  * @Description: 打印日志
  * @FilePath: \AyaLog\Print.go
@@ -19,20 +19,25 @@ import (
  * @description: 打印错误
  * @param {string} Source 日志来源
  * @param {error} Error 错误信息
+ * @param {...any} Text 日志内容
  * @return {*}
  */
-func (Log *Log) Error(Source string, Error error) {
+func (Log *Log) Error(Source string, Error error, Text ...any) {
+	// 判断是否需要打印堆栈
 	if Log.PrintErrorStack {
 		// 追踪错误来源
 		var buf [4096]byte
 		n := runtime.Stack(buf[:], false)
 		ErrorStack := fmt.Sprintf("\n%s", string(buf[:n]))
 
-		Log.Print(Source, ERROR, Error.Error(), ErrorStack)
-		return
+		// 将错误堆栈增加到日志内容后面
+		Text = append(Text, ErrorStack)
 	}
 
-	Log.Print(Source, ERROR, Error)
+	// 将Error增加到日志内容前面
+	Text = append([]any{Error}, Text...)
+
+	Log.Print(Source, ERROR, Text...)
 }
 
 /**
@@ -116,8 +121,7 @@ func (Log *Log) Print(Source string, Level int, Text ...any) error {
 		PrintLevel = strconv.Itoa(Level)
 	}
 
-	var PrintText []any
-	PrintText = append([]any{Cyan(NowTime), PrintLevel, PrintSource}, Text...)
+	var PrintText []any = append([]any{Cyan(NowTime), PrintLevel, PrintSource}, Text...)
 
 	// 准备打印日志
 	var LogBody []any
