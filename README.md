@@ -1,7 +1,7 @@
 <!--
  * @Author: NyanCatda
  * @Date: 2022-05-22 22:28:05
- * @LastEditTime: 2023-01-07 22:49:33
+ * @LastEditTime: 2023-07-09 21:56:47
  * @LastEditors: NyanCatda
  * @Description: 自述文件
  * @FilePath: \AyaLog\README.md
@@ -80,7 +80,7 @@ func main() {
 	// 初始化GIN
 	r := gin.Default()
 	// 注册日志中间件
-	r.Use((GinLog.GinLog(*Log)))
+	r.Use((GinLog.GinLog(Log)))
 
 	// 运行
 	if err := r.Run(":8000"); err != nil {
@@ -97,7 +97,7 @@ go get -u github.com/nyancatda/AyaLog/Module/GormLog
 ### 将Logger设置为模块提供的接口
 ``` go
 ConnectDB, err := gorm.Open(mysql.Open(ConnectInfo), &gorm.Config{
-	Logger: GormLog.GormLog{Log: *Log},
+	Logger: GormLog.GormLog{Log: Log},
 })
 ```
 ### 例子
