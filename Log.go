@@ -40,7 +40,7 @@ type Log struct {
 
 type LogPrint interface {
 	Print(Source string, Level int, Text ...any) error // 打印日志
-	Error(Source string, Error error)                  // 打印错误
+	Error(Source string, Error error, Text ...any)     // 打印错误
 	Warning(Source string, Text ...any)                // 打印警告
 	Info(Source string, Text ...any)                   // 打印信息
 	DeBug(Source string, Text ...any)                  // 打印DeBug信息
